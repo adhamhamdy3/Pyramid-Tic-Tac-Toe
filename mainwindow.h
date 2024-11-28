@@ -31,6 +31,9 @@ private:
 private:
     void initGrid();
     bool isPreDisabled(const int&, const int&) const;
+    void updateNoOfMovesLabel() const;
+
+    void getPlayerInfo();
 
     bool player1, player2;
 

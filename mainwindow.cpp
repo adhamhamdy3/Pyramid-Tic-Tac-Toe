@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
-#include<QMessageBox>
+#include <QMessageBox>
+#include <QInputDialog>
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -17,6 +19,11 @@ MainWindow::MainWindow(QWidget *parent)
     players[1] = new P_TTT_Player<char>("Hazem", 'O');
 
     P_TTT_GAME = new GameManager<char>(Board, players);
+
+    updateNoOfMovesLabel();
+
+    getPlayerInfo();
+
 }
 
 MainWindow::~MainWindow()
@@ -102,6 +109,59 @@ void MainWindow::on_P_TTT_Grid_cellDoubleClicked(int row, int column)
 
     player1 ^= 1;
     player2 ^= 1;
+    updateNoOfMovesLabel();
 }
 
+void MainWindow::updateNoOfMovesLabel() const{
+    ui->noOfMovesLabel->setText("NUMBER OF MOVES = " + QString::fromStdString(std::to_string(P_TTT_GAME->boardPtr->n_moves)));
+
+}
+
+
+void MainWindow::getPlayerInfo(){
+    QString player1Name, player2Name;
+    QChar player1Symbol, player2Symbol;
+
+    player1Name = QInputDialog::getText(this, "Player 1 Name", "Enter Player 1 name:", QLineEdit::Normal, "Player 1");
+    if(player1Name.isEmpty())
+        player1Name = "Player1";
+
+    bool validInput = false;
+
+    while (!validInput) {
+        QString symbolInput = QInputDialog::getText(this, "Player 1 Symbol", "Enter Player 1 symbol (one character):", QLineEdit::Normal, "X");
+        if (symbolInput.size() == 1) {
+            player1Symbol = symbolInput.at(0);
+            validInput = true;
+        } else {
+            QMessageBox::warning(this, "Invalid Input", "Player 1 symbol must be a single character.");
+        }
+    }
+
+    player2Name = QInputDialog::getText(this, "Player 2 Name", "Enter Player 2 name:", QLineEdit::Normal, "Player 2");
+    if (player2Name.isEmpty()) {
+        player2Name = "Player 2"; // Default name if no input
+    }
+
+    validInput = false;
+    while (!validInput) {
+        QString symbolInput = QInputDialog::getText(this, "Player 2 Symbol", "Enter Player 2 symbol (one character):", QLineEdit::Normal, "O");
+        if (symbolInput.size() == 1 && symbolInput.at(0) != player1Symbol) {
+            player2Symbol = symbolInput.at(0);
+            validInput = true;
+        } else {
+            QMessageBox::warning(this, "Invalid Input", "Player 2 symbol must be a single character and different from Player 1's symbol.");
+        }
+    }
+
+    players[0]->symbol = player1Symbol.toLatin1();
+    players[1]->symbol = player2Symbol.toLatin1();
+
+    ui->name1Label->setText("Name: " + player1Name);
+    ui->mark1Label->setText("Mark: " + QString::fromStdString(string(1, players[0]->getsymbol())));
+
+    ui->name2label->setText("Name: " + player2Name);
+    ui->mark2Label->setText("Mark: " + QString::fromStdString(string(1, players[1]->getsymbol())));
+
+}
 

@@ -30,6 +30,8 @@ public:
 
     /// Return true if the game is over
     virtual bool game_is_over() const = 0;
+
+    friend class MainWindow;
 };
 
 template <typename T>
@@ -52,6 +54,9 @@ public:
     void setBoard(Board<T>* b);
 
     virtual ~Player() = default;
+
+    friend class MainWindow;
+
 };
 
 /// This class represents a random computer player

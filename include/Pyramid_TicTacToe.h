@@ -4,6 +4,8 @@
 #include "BoardGame_Classes.h"
 #include <iomanip>
 
+class MainWindow;
+
 template<typename type>
 class Pyramid_TicTacToe_Board : public Board<type>{
 public:
@@ -38,6 +40,8 @@ class P_TTT_Player : public Player<type>{
 public:
     P_TTT_Player(string n, type symbol);
     void getmove(int& x, int& y) override;
+
+    friend class MainWindow;
 };
 
 template<typename type>
