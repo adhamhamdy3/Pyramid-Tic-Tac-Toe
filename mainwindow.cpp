@@ -15,14 +15,17 @@ MainWindow::MainWindow(QWidget *parent)
 
     Board = new Pyramid_TicTacToe_Board<char>();
 
-    players[0] = new P_TTT_Player<char>("Adham", 'X');
-    players[1] = new P_TTT_Player<char>("Hazem", 'O');
+    players[0] = new P_TTT_Player<char>("Player1", 'X');
+    players[1] = new P_TTT_Player<char>("Player2", 'O');
 
     P_TTT_GAME = new GameManager<char>(Board, players);
 
     updateNoOfMovesLabel();
 
     getPlayerInfo();
+
+    ui->state1label->setText("State: YOUR TURN!");
+    ui->state2Label->setText("State: Waiting...");
 
 }
 
@@ -77,14 +80,14 @@ void MainWindow::on_P_TTT_Grid_cellDoubleClicked(int row, int column)
 
     if (player1) {
         P_TTT_GAME->boardPtr->update_board(row, column, players[0]->getsymbol());
-        item->setText("X");
+        item->setText(QString::fromStdString(std::string(1, players[0]->getsymbol())));
         item->setTextAlignment(Qt::AlignCenter);
         item->setFont(QFont("Outrun future", 30, QFont::Bold));
         item->setBackground(Qt::blue);
         item->setForeground(Qt::white);
     } else if (player2) {
         P_TTT_GAME->boardPtr->update_board(row, column, players[1]->getsymbol());
-        item->setText("O");
+        item->setText(QString::fromStdString(std::string(1, players[1]->getsymbol())));
         item->setTextAlignment(Qt::AlignCenter);
         item->setFont(QFont("Outrun future", 30, QFont::Bold));
         item->setBackground(Qt::red);
@@ -109,6 +112,16 @@ void MainWindow::on_P_TTT_Grid_cellDoubleClicked(int row, int column)
 
     player1 ^= 1;
     player2 ^= 1;
+    if(player1){
+        ui->state2Label->setText("State: Waiting...");
+        ui->state1label->setText("State: YOUR TURN!");
+    }
+    else{
+        ui->state1label->setText("State: Waiting...");
+        ui->state2Label->setText("State: YOUR TURN!");
+    }
+
+
     updateNoOfMovesLabel();
 }
 

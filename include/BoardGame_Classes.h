@@ -83,10 +83,6 @@ public:
 
     void run();
 
-    // bool checkWinner() const;
-    // bool checkDraw() const;
-    // bool gameOver() const;
-
     friend class MainWindow;
 };
 
@@ -95,22 +91,6 @@ public:
 
 #include <iostream>
 using namespace std;
-
-// template <typename T>
-// bool GameManager<T>::checkWinner() const{
-//     return this->boardPtr->is_win();
-// }
-
-// template <typename T>
-// bool GameManager<T>::checkDraw() const{
-//     return this->boardPtr->is_draw();
-// }
-
-// template <typename T>
-// bool GameManager<T>::gameOver() const{
-//     return this->boardPtr->game_is_over();
-// }
-
 
 template <typename T>
 GameManager<T>::GameManager(Board<T>* bPtr, Player<T>* playerPtr[2]) {

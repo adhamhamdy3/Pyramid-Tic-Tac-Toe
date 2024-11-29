@@ -19,6 +19,28 @@ public:
     void cleanUp();
 };
 
+/// Random Player class
+
+template<typename type>
+class P_TTT_Random_Player : public RandomPlayer<type>{
+public:
+    P_TTT_Random_Player(const type& symbol);
+    void getmove(int& x, int& y) override;
+};
+
+template<typename type>
+void P_TTT_Random_Player<type>::getmove(int &x, int &y) {
+    x = rand() % 3;
+    y = rand() % 5;
+}
+
+template<typename type>
+P_TTT_Random_Player<type>::P_TTT_Random_Player(const type &symbol) : RandomPlayer<type>(symbol) {
+    this->dimension = 3;
+    this->name = "Random Computer Player";
+    srand(static_cast<unsigned int>(time(0)));
+}
+
 template<typename type>
 Pyramid_TicTacToe_Board<type>::~Pyramid_TicTacToe_Board() {
     this->cleanUp();
