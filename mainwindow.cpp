@@ -71,8 +71,6 @@ bool MainWindow::isPreDisabled(const int& row, const int& col) const{
 
 void MainWindow::on_P_TTT_Grid_cellDoubleClicked(int row, int column)
 {
-    ui->P_TTT_Grid->setEnabled(player1);
-
     QTableWidgetItem *item = ui->P_TTT_Grid->item(row, column);
 
     if (!item || item->flags() & Qt::ItemIsEnabled == 0 || !item->text().isEmpty()) {
@@ -90,7 +88,7 @@ void MainWindow::on_P_TTT_Grid_cellDoubleClicked(int row, int column)
 
     isGameIsOver();
 
-    updateState();
+    updateState(); // toggle player1 ^= 1
 
     if(!randomPlayerMode) player2 ^= 1;
 
@@ -169,8 +167,10 @@ void MainWindow::getPlayerInfo(){
 }
 
 void MainWindow::executeRandomPlayerTurn(){
+    player1 = false;
     int x, y;
     players[1]->getmove(x, y);
+
     while(!P_TTT_GAME->boardPtr->update_board(x, y, players[1]->getsymbol())){
         players[1]->getmove(x, y);
     }
@@ -181,12 +181,16 @@ void MainWindow::executeRandomPlayerTurn(){
 
     isGameIsOver();
 
-    player1 ^= 1;
+    player1 = true;
 
     updateState();
+
+    ui->P_TTT_Grid->setEnabled(true);
+
 }
 
 void MainWindow::randomPlayerTurn(const int& delay = 2000) {
+    ui->P_TTT_Grid->setEnabled(false);
     QTimer::singleShot(delay, this, &MainWindow::executeRandomPlayerTurn);
 }
 
@@ -205,7 +209,6 @@ void MainWindow::updateCell(QTableWidgetItem *item, const int& playerIndex, cons
 
 
 void MainWindow::updateState(){
-    player1 ^= 1;
     if(player1){
         ui->state2Label->setText("State: Waiting...");
         ui->state1label->setText("State: YOUR TURN!");
@@ -229,6 +232,5 @@ void MainWindow::isGameIsOver(){
         }
 
         ui->P_TTT_Grid->setEnabled(false);
-        return;
     }
 }
