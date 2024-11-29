@@ -76,25 +76,14 @@ void MainWindow::on_P_TTT_Grid_cellDoubleClicked(int row, int column)
         return;
     }
 
-    // players ptr, player number
-
     if (player1) {
         P_TTT_GAME->boardPtr->update_board(row, column, players[0]->getsymbol());
         updateCell(item, 0, row, column);
 
-
-
-
     } else if (player2) {
         P_TTT_GAME->boardPtr->update_board(row, column, players[1]->getsymbol());
         updateCell(item, 1, row, column);
-
-
-
-
     }
-
-    item->setFlags(Qt::NoItemFlags);
 
     if (P_TTT_GAME->boardPtr->game_is_over()) {
         if (P_TTT_GAME->boardPtr->is_win()) {
@@ -111,7 +100,7 @@ void MainWindow::on_P_TTT_Grid_cellDoubleClicked(int row, int column)
     }
 
     player1 ^= 1;
-    player2 ^= 1;
+    if(!randomPlayerMode) player2 ^= 1;
     if(player1){
         ui->state2Label->setText("State: Waiting...");
         ui->state1label->setText("State: YOUR TURN!");
@@ -164,7 +153,7 @@ void MainWindow::getPlayerInfo(){
     if (reply == QMessageBox::Yes) {
         players[1] = new P_TTT_Random_Player<char>(player1Symbol == 'X' ? 'O' : 'X');
         randomPlayerMode = true;
-        return;
+        goto updateLabels;
     }
     ///
     player2Name = QInputDialog::getText(this, "Player 2 Name", "Enter Player 2 name:", QLineEdit::Normal, "Player 2");
@@ -186,10 +175,12 @@ void MainWindow::getPlayerInfo(){
 
     players[1] = new P_TTT_Player<char>(player2Name.toStdString(), player2Symbol.toLatin1());
 
+    updateLabels:{};
+
     ui->name1Label->setText("Name: " + player1Name);
     ui->mark1Label->setText("Mark: " + QString::fromStdString(string(1, players[0]->getsymbol())));
 
-    ui->name2label->setText("Name: " + player2Name);
+    ui->name2label->setText("Name: " + QString::fromStdString(players[1]->getname()));
     ui->mark2Label->setText("Mark: " + QString::fromStdString(string(1, players[1]->getsymbol())));
 
 }
@@ -215,4 +206,7 @@ void MainWindow::updateCell(QTableWidgetItem *item, const int& playerIndex, cons
     if(!playerIndex) item->setBackground(Qt::blue);
     else item->setBackground(Qt::red);
     item->setForeground(Qt::white);
+
+    item->setFlags(Qt::NoItemFlags);
+
 }
