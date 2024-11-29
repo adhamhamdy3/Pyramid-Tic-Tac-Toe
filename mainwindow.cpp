@@ -10,8 +10,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     initGrid();
 
-    updateNoOfMovesLabel();
-
     player1 = true;
     player2 = false;
 
@@ -23,8 +21,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     P_TTT_GAME = new GameManager<char>(Board, players);
 
-
-
+    updateNoOfMovesLabel();
 
     ui->state1label->setText("State: YOUR TURN!");
     ui->state2Label->setText("State: Waiting...");
