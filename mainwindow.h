@@ -43,6 +43,10 @@ private:
     void randomPlayerTurn(const int&);
     void executeRandomPlayerTurn();
 
+    void updateState();
+
+    void isGameIsOver();
+
     void updateCell(QTableWidgetItem*, const int&, const int&, const int&);
 
 };

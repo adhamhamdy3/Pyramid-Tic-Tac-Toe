@@ -88,36 +88,14 @@ void MainWindow::on_P_TTT_Grid_cellDoubleClicked(int row, int column)
         updateCell(item, 1, row, column);
     }
 
-    if (P_TTT_GAME->boardPtr->game_is_over()) {
-        if (P_TTT_GAME->boardPtr->is_win()) {
-            if (player1)
-                QMessageBox::information(this, "Win!", QString::fromStdString(players[0]->getname()) + " has won.");
-            else
-                QMessageBox::information(this, "Win!", QString::fromStdString(players[1]->getname()) + " has won.");
-        } else if (P_TTT_GAME->boardPtr->is_draw()) {
-            QMessageBox::information(this, "Draw!", "The match ended with a draw.");
-        }
+    isGameIsOver();
 
-        ui->P_TTT_Grid->setEnabled(false);
-        return;
-    }
-
-    player1 ^= 1;
-
-    if(player1){
-        ui->state2Label->setText("State: Waiting...");
-        ui->state1label->setText("State: YOUR TURN!");
-    }
-    else{
-        ui->state1label->setText("State: Waiting...");
-        ui->state2Label->setText("State: YOUR TURN!");
-    }
+    updateState();
 
     if(!randomPlayerMode) player2 ^= 1;
 
     if(randomPlayerMode)
         randomPlayerTurn(2000);
-
 
     updateNoOfMovesLabel();
 }
@@ -182,7 +160,7 @@ void MainWindow::getPlayerInfo(){
 
     updateLabels:{};
 
-    ui->name1Label->setText("Name: " + player1Name);
+    ui->name1Label->setText("Name: " + QString::fromStdString(players[0]->getname()));
     ui->mark1Label->setText("Mark: " + QString::fromStdString(string(1, players[0]->getsymbol())));
 
     ui->name2label->setText("Name: " + QString::fromStdString(players[1]->getname()));
@@ -201,7 +179,11 @@ void MainWindow::executeRandomPlayerTurn(){
 
     updateCell(item, 1, x, y);
 
+    isGameIsOver();
+
     player1 ^= 1;
+
+    updateState();
 }
 
 void MainWindow::randomPlayerTurn(const int& delay = 2000) {
@@ -219,4 +201,34 @@ void MainWindow::updateCell(QTableWidgetItem *item, const int& playerIndex, cons
 
     item->setFlags(Qt::NoItemFlags);
 
+}
+
+
+void MainWindow::updateState(){
+    player1 ^= 1;
+    if(player1){
+        ui->state2Label->setText("State: Waiting...");
+        ui->state1label->setText("State: YOUR TURN!");
+    }
+    else{
+        ui->state1label->setText("State: Waiting...");
+        ui->state2Label->setText("State: YOUR TURN!");
+    }
+}
+
+
+void MainWindow::isGameIsOver(){
+    if (P_TTT_GAME->boardPtr->game_is_over()) {
+        if (P_TTT_GAME->boardPtr->is_win()) {
+            if (player1)
+                QMessageBox::information(this, "Win!", QString::fromStdString(players[0]->getname()) + " has won.");
+            else
+                QMessageBox::information(this, "Win!", QString::fromStdString(players[1]->getname()) + " has won.");
+        } else if (P_TTT_GAME->boardPtr->is_draw()) {
+            QMessageBox::information(this, "Draw!", "The match ended with a draw.");
+        }
+
+        ui->P_TTT_Grid->setEnabled(false);
+        return;
+    }
 }
