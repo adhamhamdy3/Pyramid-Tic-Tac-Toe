@@ -15,14 +15,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     Board = new Pyramid_TicTacToe_Board<char>();
 
-    players[0] = new P_TTT_Player<char>("Player1", 'X');
-    players[1] = new P_TTT_Player<char>("Player2", 'O');
+    getPlayerInfo();
 
     P_TTT_GAME = new GameManager<char>(Board, players);
 
     updateNoOfMovesLabel();
 
-    getPlayerInfo();
 
     ui->state1label->setText("State: YOUR TURN!");
     ui->state2Label->setText("State: Waiting...");
@@ -153,7 +151,7 @@ void MainWindow::getPlayerInfo(){
 
     player2Name = QInputDialog::getText(this, "Player 2 Name", "Enter Player 2 name:", QLineEdit::Normal, "Player 2");
     if (player2Name.isEmpty()) {
-        player2Name = "Player 2"; // Default name if no input
+        player2Name = "Player 2";
     }
 
     validInput = false;
@@ -167,8 +165,8 @@ void MainWindow::getPlayerInfo(){
         }
     }
 
-    players[0]->symbol = player1Symbol.toLatin1();
-    players[1]->symbol = player2Symbol.toLatin1();
+    players[0] = new P_TTT_Player<char>(player1Name.toStdString(), player1Symbol.toLatin1());
+    players[1] = new P_TTT_Player<char>(player2Name.toStdString(), player2Symbol.toLatin1());
 
     ui->name1Label->setText("Name: " + player1Name);
     ui->mark1Label->setText("Mark: " + QString::fromStdString(string(1, players[0]->getsymbol())));
