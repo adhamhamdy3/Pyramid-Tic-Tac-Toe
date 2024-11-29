@@ -35,11 +35,10 @@
    <bool>false</bool>
   </property>
   <property name="styleSheet">
-   <string notr="true">
-</string>
+   <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>160</x>
@@ -72,8 +71,7 @@
        <item>
         <widget class="QTableWidget" name="P_TTT_Grid">
          <property name="styleSheet">
-          <string notr="true">
-</string>
+          <string notr="true"/>
          </property>
          <property name="autoScroll">
           <bool>false</bool>

@@ -40,7 +40,8 @@ private:
 
     bool randomPlayerMode;
 
-    void randomPlayerTurn();
+    void randomPlayerTurn(const int&);
+    void executeRandomPlayerTurn();
 
     void updateCell(QTableWidgetItem*, const int&, const int&, const int&);
 

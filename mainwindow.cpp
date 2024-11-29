@@ -2,6 +2,7 @@
 #include "./ui_mainwindow.h"
 #include <QMessageBox>
 #include <QInputDialog>
+#include <QTimer>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -70,6 +71,8 @@ bool MainWindow::isPreDisabled(const int& row, const int& col) const{
 
 void MainWindow::on_P_TTT_Grid_cellDoubleClicked(int row, int column)
 {
+    ui->P_TTT_Grid->setEnabled(player1);
+
     QTableWidgetItem *item = ui->P_TTT_Grid->item(row, column);
 
     if (!item || item->flags() & Qt::ItemIsEnabled == 0 || !item->text().isEmpty()) {
@@ -113,7 +116,7 @@ void MainWindow::on_P_TTT_Grid_cellDoubleClicked(int row, int column)
     if(!randomPlayerMode) player2 ^= 1;
 
     if(randomPlayerMode)
-        randomPlayerTurn();
+        randomPlayerTurn(2000);
 
 
     updateNoOfMovesLabel();
@@ -187,7 +190,7 @@ void MainWindow::getPlayerInfo(){
 
 }
 
-void MainWindow::randomPlayerTurn(){
+void MainWindow::executeRandomPlayerTurn(){
     int x, y;
     players[1]->getmove(x, y);
     while(!P_TTT_GAME->boardPtr->update_board(x, y, players[1]->getsymbol())){
@@ -199,7 +202,10 @@ void MainWindow::randomPlayerTurn(){
     updateCell(item, 1, x, y);
 
     player1 ^= 1;
+}
 
+void MainWindow::randomPlayerTurn(const int& delay = 2000) {
+    QTimer::singleShot(delay, this, &MainWindow::executeRandomPlayerTurn);
 }
 
 
