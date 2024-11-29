@@ -100,7 +100,7 @@ void MainWindow::on_P_TTT_Grid_cellDoubleClicked(int row, int column)
     }
 
     player1 ^= 1;
-    if(!randomPlayerMode) player2 ^= 1;
+
     if(player1){
         ui->state2Label->setText("State: Waiting...");
         ui->state1label->setText("State: YOUR TURN!");
@@ -109,6 +109,8 @@ void MainWindow::on_P_TTT_Grid_cellDoubleClicked(int row, int column)
         ui->state1label->setText("State: Waiting...");
         ui->state2Label->setText("State: YOUR TURN!");
     }
+
+    if(!randomPlayerMode) player2 ^= 1;
 
     if(randomPlayerMode)
         randomPlayerTurn();
@@ -195,6 +197,8 @@ void MainWindow::randomPlayerTurn(){
     QTableWidgetItem *item = ui->P_TTT_Grid->item(x, y);
 
     updateCell(item, 1, x, y);
+
+    player1 ^= 1;
 
 }
 
