@@ -4,7 +4,6 @@
 #include <QMainWindow>
 #include "BoardGame_Classes.h"
 #include "Pyramid_TicTacToe.h"
-#include <QTableWidgetItem>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -37,12 +36,6 @@ private:
     void getPlayerInfo();
 
     bool player1, player2;
-
-    bool randomPlayerMode;
-
-    void randomPlayerTurn();
-
-    void updateCell(QTableWidgetItem*, const int&, const int&, const int&);
 
 };
 #endif // MAINWINDOW_H

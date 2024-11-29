@@ -80,7 +80,7 @@ private:
     Player<T>* players[2];
 public:
     GameManager(Board<T>*, Player<T>* playerPtr[2]);
-    ~GameManager();
+
     void run();
 
     friend class MainWindow;
@@ -97,12 +97,6 @@ GameManager<T>::GameManager(Board<T>* bPtr, Player<T>* playerPtr[2]) {
     boardPtr = bPtr;
     players[0] = playerPtr[0];
     players[1] = playerPtr[1];
-}
-
-template <typename T>
-GameManager<T>::~GameManager() {
-    players[0] = nullptr;
-    players[1] = nullptr;
 }
 
 template <typename T>
