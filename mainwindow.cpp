@@ -90,6 +90,8 @@ void MainWindow::on_P_TTT_Grid_cellDoubleClicked(int row, int column)
 
     updateState(); // toggle player1 ^= 1
 
+    player1 ^= 1;
+
     if(!randomPlayerMode) player2 ^= 1;
 
     if(randomPlayerMode)
