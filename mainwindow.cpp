@@ -10,8 +10,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     initGrid();
 
+    updateNoOfMovesLabel();
+
     player1 = true;
     player2 = false;
+
+    randomPlayerMode = false;
 
     Board = new Pyramid_TicTacToe_Board<char>();
 
@@ -19,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     P_TTT_GAME = new GameManager<char>(Board, players);
 
-    updateNoOfMovesLabel();
+
 
 
     ui->state1label->setText("State: YOUR TURN!");
@@ -30,9 +34,9 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
-    delete Board;
-    delete players[0];
-    delete players[1];
+    if (players[0]) delete players[0];
+    if (players[1]) delete players[1];
+    if (Board) delete Board;
 
     delete P_TTT_GAME;
 
@@ -75,21 +79,22 @@ void MainWindow::on_P_TTT_Grid_cellDoubleClicked(int row, int column)
         return;
     }
 
+    // players ptr, player number
 
     if (player1) {
         P_TTT_GAME->boardPtr->update_board(row, column, players[0]->getsymbol());
-        item->setText(QString::fromStdString(std::string(1, players[0]->getsymbol())));
-        item->setTextAlignment(Qt::AlignCenter);
-        item->setFont(QFont("Outrun future", 30, QFont::Bold));
-        item->setBackground(Qt::blue);
-        item->setForeground(Qt::white);
+        updateCell(item, 0, row, column);
+
+
+
+
     } else if (player2) {
         P_TTT_GAME->boardPtr->update_board(row, column, players[1]->getsymbol());
-        item->setText(QString::fromStdString(std::string(1, players[1]->getsymbol())));
-        item->setTextAlignment(Qt::AlignCenter);
-        item->setFont(QFont("Outrun future", 30, QFont::Bold));
-        item->setBackground(Qt::red);
-        item->setForeground(Qt::white);
+        updateCell(item, 1, row, column);
+
+
+
+
     }
 
     item->setFlags(Qt::NoItemFlags);
@@ -97,9 +102,9 @@ void MainWindow::on_P_TTT_Grid_cellDoubleClicked(int row, int column)
     if (P_TTT_GAME->boardPtr->game_is_over()) {
         if (P_TTT_GAME->boardPtr->is_win()) {
             if (player1)
-                QMessageBox::information(this, "Win!", "Player 1 has won.");
+                QMessageBox::information(this, "Win!", QString::fromStdString(players[0]->getname()) + " has won.");
             else
-                QMessageBox::information(this, "Win!", "Player 2 has won.");
+                QMessageBox::information(this, "Win!", QString::fromStdString(players[1]->getname()) + " has won.");
         } else if (P_TTT_GAME->boardPtr->is_draw()) {
             QMessageBox::information(this, "Draw!", "The match ended with a draw.");
         }
@@ -118,6 +123,9 @@ void MainWindow::on_P_TTT_Grid_cellDoubleClicked(int row, int column)
         ui->state1label->setText("State: Waiting...");
         ui->state2Label->setText("State: YOUR TURN!");
     }
+
+    if(randomPlayerMode)
+        randomPlayerTurn();
 
 
     updateNoOfMovesLabel();
@@ -149,6 +157,19 @@ void MainWindow::getPlayerInfo(){
         }
     }
 
+    players[0] = new P_TTT_Player<char>(player1Name.toStdString(), player1Symbol.toLatin1());
+    /// Random Player Mode?
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, "Play Against Random Player?",
+                                  "Do you want to play against a Random Player?",
+                                  QMessageBox::Yes | QMessageBox::No);
+
+    if (reply == QMessageBox::Yes) {
+        players[1] = new P_TTT_Random_Player<char>(player1Symbol == 'X' ? 'O' : 'X');
+        randomPlayerMode = true;
+        return;
+    }
+    ///
     player2Name = QInputDialog::getText(this, "Player 2 Name", "Enter Player 2 name:", QLineEdit::Normal, "Player 2");
     if (player2Name.isEmpty()) {
         player2Name = "Player 2";
@@ -165,7 +186,7 @@ void MainWindow::getPlayerInfo(){
         }
     }
 
-    players[0] = new P_TTT_Player<char>(player1Name.toStdString(), player1Symbol.toLatin1());
+
     players[1] = new P_TTT_Player<char>(player2Name.toStdString(), player2Symbol.toLatin1());
 
     ui->name1Label->setText("Name: " + player1Name);
@@ -176,3 +197,25 @@ void MainWindow::getPlayerInfo(){
 
 }
 
+void MainWindow::randomPlayerTurn(){
+    int x, y;
+    players[1]->getmove(x, y);
+    while(!P_TTT_GAME->boardPtr->update_board(x, y, players[1]->getsymbol())){
+        players[1]->getmove(x, y);
+    }
+
+    QTableWidgetItem *item = ui->P_TTT_Grid->item(x, y);
+
+    updateCell(item, 1, x, y);
+
+}
+
+
+void MainWindow::updateCell(QTableWidgetItem *item, const int& playerIndex, const int& row, const int& column){
+    item->setText(QString::fromStdString(std::string(1, players[playerIndex]->getsymbol())));
+    item->setTextAlignment(Qt::AlignCenter);
+    item->setFont(QFont("Outrun future", 30, QFont::Bold));
+    if(!playerIndex) item->setBackground(Qt::blue);
+    else item->setBackground(Qt::red);
+    item->setForeground(Qt::white);
+}

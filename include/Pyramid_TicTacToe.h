@@ -48,10 +48,14 @@ Pyramid_TicTacToe_Board<type>::~Pyramid_TicTacToe_Board() {
 
 template<typename type>
 void Pyramid_TicTacToe_Board<type>::cleanUp() {
-    for (int i = 0; i < this->rows; ++i) {
-        delete [] this->board[i];
+    if (this->board) {
+        for (int i = 0; i < this->rows; ++i) {
+            delete[] this->board[i];
+        }
+        delete[] this->board;
+        this->board = nullptr;
     }
-    delete [] this->board;
+
     this->n_moves = 0;
 }
 
@@ -102,7 +106,7 @@ bool Pyramid_TicTacToe_Board<type>::is_win() const {
 
     for (int i = 0; i < this->columns - 2; ++i) {
         if (this->board[2][i] == this->board[2][i + 1] && this->board[2][i + 1] == this->board[2][i + 2]
-        && this->board[2][i] != ' ') {
+            && this->board[2][i] != ' ') {
             return true;
         }
     }
