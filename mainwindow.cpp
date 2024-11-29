@@ -162,7 +162,7 @@ void MainWindow::getPlayerInfo(){
 
     players[1] = new P_TTT_Player<char>(player2Name.toStdString(), player2Symbol.toLatin1());
 
-    updateLabels:{};
+updateLabels:{};
 
     ui->name1Label->setText("Name: " + QString::fromStdString(players[0]->getname()));
     ui->mark1Label->setText("Mark: " + QString::fromStdString(string(1, players[0]->getsymbol())));

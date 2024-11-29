@@ -50,5 +50,7 @@ private:
 
     void updateCell(QTableWidgetItem*, const int&, const int&, const int&);
 
+    void playAgain();
+
 };
 #endif // MAINWINDOW_H
