@@ -15,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent)
     player2 = false;
 
     randomPlayerMode = false;
+    gameOver = false;
 
     Board = new Pyramid_TicTacToe_Board<char>();
 
@@ -88,9 +89,12 @@ void MainWindow::on_P_TTT_Grid_cellDoubleClicked(int row, int column)
 
     isGameIsOver();
 
-    updateState(); // toggle player1 ^= 1
+    if(gameOver) return void (ui->P_TTT_Grid->setEnabled(false));
 
     player1 ^= 1;
+
+    updateState(); // toggle player1 ^= 1
+
 
     if(!randomPlayerMode) player2 ^= 1;
 
@@ -187,7 +191,7 @@ void MainWindow::executeRandomPlayerTurn(){
 
     updateState();
 
-    ui->P_TTT_Grid->setEnabled(true);
+    ui->P_TTT_Grid->setEnabled(!gameOver);
 
 }
 
@@ -232,7 +236,6 @@ void MainWindow::isGameIsOver(){
         } else if (P_TTT_GAME->boardPtr->is_draw()) {
             QMessageBox::information(this, "Draw!", "The match ended with a draw.");
         }
-
-        ui->P_TTT_Grid->setEnabled(false);
+        gameOver = true;
     }
 }

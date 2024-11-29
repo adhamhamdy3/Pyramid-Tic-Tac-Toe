@@ -39,6 +39,7 @@ private:
     bool player1, player2;
 
     bool randomPlayerMode;
+    bool gameOver;
 
     void randomPlayerTurn(const int&);
     void executeRandomPlayerTurn();
