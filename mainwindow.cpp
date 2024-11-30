@@ -6,7 +6,7 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+    , ui(new Ui::Pyramid_Tic_Tac_Toe)
 {
     ui->setupUi(this);
     initGrid();

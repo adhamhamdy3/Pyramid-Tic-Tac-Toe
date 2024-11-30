@@ -8,7 +8,7 @@
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
-class MainWindow;
+class Pyramid_Tic_Tac_Toe;
 }
 QT_END_NAMESPACE
 
@@ -24,7 +24,7 @@ private slots:
     void on_P_TTT_Grid_cellDoubleClicked(int row, int column);
 
 private:
-    Ui::MainWindow *ui;
+    Ui::Pyramid_Tic_Tac_Toe *ui;
     Player<char>* players[2];
     Pyramid_TicTacToe_Board<char>* Board;
     GameManager<char>* P_TTT_GAME;
