@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "BoardGame_Classes.h"
 #include "Pyramid_TicTacToe.h"
+#include "P_TTT_AI_Player.h"
 #include <QTableWidgetItem>
 
 QT_BEGIN_NAMESPACE
@@ -38,11 +39,14 @@ private:
 
     bool player1, player2;
 
-    bool randomPlayerMode;
+    bool nonHumanPlayerMode;
     bool gameOver;
 
-    void randomPlayerTurn(const int&);
-    void executeRandomPlayerTurn();
+    void nonHumanPlayerTurn(const int&);
+    void executeNonHumanPlayerTurn();
+
+    void AI_PlayerTurn(const int&);
+    void execute_AI_PlayerTurn();
 
     void updateState();
 
@@ -51,6 +55,8 @@ private:
     void updateCell(QTableWidgetItem*, const int&, const int&, const int&);
 
     void playAgain();
+
+    QChar getSymbol(const QString&);
 
 };
 #endif // MAINWINDOW_H

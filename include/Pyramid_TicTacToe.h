@@ -21,7 +21,7 @@ public:
     bool is_draw() const override;
     bool game_is_over() const override;
     void cleanUp();
-    void resetBoard();
+    void resetBoard() override;
 };
 
 // Pyramid TTT Constructor
@@ -43,9 +43,15 @@ Pyramid_TicTacToe_Board<type>::~Pyramid_TicTacToe_Board() {
 // update_board Function
 template<typename type>
 bool Pyramid_TicTacToe_Board<type>::update_board(const int& x, const int& y, const type& symbol) {
-    if(!(x < 0 || x >= this->rows || y < 0 || y >= this->columns) && this->board[x][y] == ' '){
-        this->n_moves++;
-        this->board[x][y] = toupper(symbol); // loop better
+    if(!(x < 0 || x >= this->rows || y < 0 || y >= this->columns) && (this->board[x][y] == ' ' || symbol == ' ')){
+        if (symbol == ' '){
+            this->n_moves--;
+            this->board[x][y] = ' ';
+        }
+        else {
+            this->n_moves++;
+            this->board[x][y] = toupper(symbol); // loop better
+        }
         return true;
     }
     return false;
@@ -60,7 +66,7 @@ void Pyramid_TicTacToe_Board<type>::display_board() const {
             cout << "(" << i << "," << j << ")";
             cout << setw(2) << this->board[i][j] << " |";
         }
-        cout << "\n-----------------------------------------------";
+        cout << "\n--------------No. of Moves = " << this->n_moves << " -----------------";
     }
     cout << endl;
 }

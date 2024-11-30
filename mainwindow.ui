@@ -47,10 +47,10 @@
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>164</x>
-      <y>74</y>
+      <x>170</x>
+      <y>30</y>
       <width>681</width>
-      <height>681</height>
+      <height>691</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -101,7 +101,7 @@
   border-radius: 5px;
 }
 
-hover {
+hover: {
 	background-color: transparent;
 }</string>
          </property>
@@ -166,6 +166,11 @@ hover {
            <string>New Column</string>
           </property>
          </column>
+         <item row="0" column="0">
+          <property name="text">
+           <string/>
+          </property>
+         </item>
         </widget>
        </item>
       </layout>
@@ -200,6 +205,9 @@ hover {
              <family>outrun future</family>
              <italic>false</italic>
             </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">color: blue;</string>
            </property>
            <property name="frameShadow">
             <enum>QFrame::Shadow::Plain</enum>
@@ -299,6 +307,9 @@ hover {
          </item>
          <item>
           <widget class="Line" name="line_2">
+           <property name="styleSheet">
+            <string notr="true">color: red;</string>
+           </property>
            <property name="frameShadow">
             <enum>QFrame::Shadow::Plain</enum>
            </property>
@@ -374,7 +385,7 @@ hover {
      <x>0</x>
      <y>0</y>
      <width>1000</width>
-     <height>22</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>

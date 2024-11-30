@@ -2,6 +2,7 @@
 #include "./ui_mainwindow.h"
 #include <QMessageBox>
 #include <QInputDialog>
+#include <QPushButton>
 #include <QTimer>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -14,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent)
     player1 = true;
     player2 = false;
 
-    randomPlayerMode = false;
+    nonHumanPlayerMode = false;
     gameOver = false;
 
     Board = new Pyramid_TicTacToe_Board<char>();
@@ -52,10 +53,10 @@ void MainWindow::initGrid(){
 
             if (isPreDisabled(row, col)) {
                 item->setFlags(Qt::NoItemFlags);
-                item->setBackground(Qt::gray);
+                item->setBackground(Qt::transparent);
             } else {
                 item->setFlags(Qt::ItemIsEnabled);
-                item->setBackground(Qt::white);
+                item->setBackground(Qt::gray);
                 item->setTextAlignment(Qt::AlignCenter);
             }
 
@@ -96,10 +97,10 @@ void MainWindow::on_P_TTT_Grid_cellDoubleClicked(int row, int column)
     updateState(); // toggle player1 ^= 1
 
 
-    if(!randomPlayerMode) player2 ^= 1;
+    if(!nonHumanPlayerMode) player2 ^= 1;
 
-    if(randomPlayerMode)
-        randomPlayerTurn(2000);
+    if(nonHumanPlayerMode)
+        nonHumanPlayerTurn(2000);
 
     updateNoOfMovesLabel();
 }
@@ -111,69 +112,53 @@ void MainWindow::updateNoOfMovesLabel() const{
 
 
 void MainWindow::getPlayerInfo(){
-    QString player1Name, player2Name;
-    QChar player1Symbol, player2Symbol;
+    QString player1Name = QInputDialog::getText(this, "Player 1 Name", "Enter Player 1 name:", QLineEdit::Normal, "Player 1");
+    if(player1Name.isEmpty()) player1Name = "Player1";
 
-    player1Name = QInputDialog::getText(this, "Player 1 Name", "Enter Player 1 name:", QLineEdit::Normal, "Player 1");
-    if(player1Name.isEmpty())
-        player1Name = "Player1";
-
-    bool validInput = false;
-
-    while (!validInput) {
-        QString symbolInput = QInputDialog::getText(this, "Player 1 Symbol", "Enter Player 1 symbol (one character):", QLineEdit::Normal, "X");
-        if (symbolInput.size() == 1) {
-            player1Symbol = symbolInput.at(0);
-            validInput = true;
-        } else {
-            QMessageBox::warning(this, "Invalid Input", "Player 1 symbol must be a single character.");
-        }
-    }
+    QChar player1Symbol = getSymbol("X");
 
     players[0] = new P_TTT_Player<char>(player1Name.toStdString(), player1Symbol.toLatin1());
-    /// Random Player Mode?
-    QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, "Play Against Random Player?",
-                                  "Do you want to play against a Random Player?",
-                                  QMessageBox::Yes | QMessageBox::No);
 
-    if (reply == QMessageBox::Yes) {
-        players[1] = new P_TTT_Random_Player<char>(player1Symbol == 'X' ? 'O' : 'X');
-        randomPlayerMode = true;
-        goto updateLabels;
+    QMessageBox msgBox(this);
+
+    msgBox.setText("Choose your opponent type:");
+    QPushButton* aiButton = msgBox.addButton("AI Player", QMessageBox::ActionRole);
+    QPushButton* randomButton = msgBox.addButton("Random Computer Player", QMessageBox::ActionRole);
+    QPushButton* realButton = msgBox.addButton("Real Player", QMessageBox::ActionRole);
+
+    msgBox.exec();
+
+    QChar player2Symbol;
+
+    if (msgBox.clickedButton() == aiButton) {
+        player2Symbol = getSymbol("O");
+        players[1] = new P_TTT_AI_Player<char>(player2Symbol.toLatin1());
+        players[1]->setBoard(Board);
+        nonHumanPlayerMode = true;
+    } else if (msgBox.clickedButton() == randomButton) {
+        player2Symbol = getSymbol("O");
+        players[1] = new P_TTT_Random_Player<char>(player2Symbol.toLatin1());
+        nonHumanPlayerMode = true;
+    } else if (msgBox.clickedButton() == realButton) {
+        QString player2Name = QInputDialog::getText(this, "Player 2 Name", "Enter Player 2 name:", QLineEdit::Normal, "Player 2");
+        if (player2Name.isEmpty()) player2Name = "Player 2";
+
+        player2Symbol = getSymbol("O");
+
+        players[1] = new P_TTT_Player<char>(player2Name.toStdString(), player2Symbol.toLatin1());
     }
-    ///
-    player2Name = QInputDialog::getText(this, "Player 2 Name", "Enter Player 2 name:", QLineEdit::Normal, "Player 2");
-    if (player2Name.isEmpty()) {
-        player2Name = "Player 2";
-    }
-
-    validInput = false;
-    while (!validInput) {
-        QString symbolInput = QInputDialog::getText(this, "Player 2 Symbol", "Enter Player 2 symbol (one character):", QLineEdit::Normal, "O");
-        if (symbolInput.size() == 1 && symbolInput.at(0) != player1Symbol) {
-            player2Symbol = symbolInput.at(0);
-            validInput = true;
-        } else {
-            QMessageBox::warning(this, "Invalid Input", "Player 2 symbol must be a single character and different from Player 1's symbol.");
-        }
-    }
-
-
-    players[1] = new P_TTT_Player<char>(player2Name.toStdString(), player2Symbol.toLatin1());
-
-updateLabels:{};
 
     ui->name1Label->setText("Name: " + QString::fromStdString(players[0]->getname()));
     ui->mark1Label->setText("Mark: " + QString::fromStdString(string(1, players[0]->getsymbol())));
 
     ui->name2label->setText("Name: " + QString::fromStdString(players[1]->getname()));
     ui->mark2Label->setText("Mark: " + QString::fromStdString(string(1, players[1]->getsymbol())));
-
 }
 
-void MainWindow::executeRandomPlayerTurn(){
+
+void MainWindow::executeNonHumanPlayerTurn(){
     player1 = false;
+
     int x, y;
     players[1]->getmove(x, y);
 
@@ -195,9 +180,9 @@ void MainWindow::executeRandomPlayerTurn(){
 
 }
 
-void MainWindow::randomPlayerTurn(const int& delay = 2000) {
+void MainWindow::nonHumanPlayerTurn(const int& delay = 2000) {
     ui->P_TTT_Grid->setEnabled(false);
-    QTimer::singleShot(delay, this, &MainWindow::executeRandomPlayerTurn);
+    QTimer::singleShot(delay, this, &MainWindow::executeNonHumanPlayerTurn);
 }
 
 
@@ -238,4 +223,18 @@ void MainWindow::isGameIsOver(){
         }
         gameOver = true;
     }
+}
+
+QChar MainWindow::getSymbol(const QString& defaultSymbol){
+    QChar playerSymbol;
+    while (true) {
+        QString symbolInput = QInputDialog::getText(this, "Player 1 Symbol", "Enter Player 1 symbol (one character):", QLineEdit::Normal, defaultSymbol);
+        if (symbolInput.size() == 1 && !symbolInput.at(0).isSpace()) {
+            playerSymbol = symbolInput.at(0);
+            break;
+        } else {
+            QMessageBox::warning(this, "Invalid Input", "Player 1 symbol must be a single non-whitespace character.");
+        }
+    }
+    return playerSymbol;
 }

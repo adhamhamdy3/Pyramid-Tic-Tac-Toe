@@ -21,6 +21,7 @@ set(PROJECT_SOURCES
         mainwindow.ui
         include/BoardGame_Classes.h
         include/Pyramid_TicTacToe.h
+        include/P_TTT_AI_Player.h
 
 )
 
