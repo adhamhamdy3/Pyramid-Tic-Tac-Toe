@@ -1,5 +1,5 @@
-#ifndef PYRAMID_TIC_TAC_TOE_PYRAMID_TICTACTOE_H
-#define PYRAMID_TIC_TAC_TOE_PYRAMID_TICTACTOE_H
+#ifndef PYRAMID_TIC_TAC_TOE_H
+#define PYRAMID_TIC_TAC_TOE_H
 
 #include "BoardGame_Classes.h"
 #include <iomanip>
@@ -21,7 +21,9 @@ public:
     bool is_draw() const override;
     bool game_is_over() const override;
     void cleanUp();
-    void resetBoard() override;
+    void resetBoard();
+
+    friend class MainWindow;
 };
 
 // Pyramid TTT Constructor
@@ -200,4 +202,4 @@ void P_TTT_Player<type>::getmove(int &x, int &y) {
     cin >> x >> y;
 }
 
-#endif //PYRAMID_TIC_TAC_TOE_PYRAMID_TICTACTOE_H
+#endif //PYRAMID_TIC_TAC_TOE_H

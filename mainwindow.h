@@ -28,8 +28,6 @@ private:
     Ui::Pyramid_Tic_Tac_Toe *ui;
     Player<char>* players[2];
     Pyramid_TicTacToe_Board<char>* Board;
-    GameManager<char>* P_TTT_GAME;
-
 private:
     void initGrid();
     bool isPreDisabled(const int&, const int&) const;

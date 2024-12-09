@@ -31,8 +31,6 @@ public:
     /// Return true if the game is over
     virtual bool game_is_over() const = 0;
 
-    virtual void resetBoard() = 0;
-
     friend class MainWindow;
 };
 

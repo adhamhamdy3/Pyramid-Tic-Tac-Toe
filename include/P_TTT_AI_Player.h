@@ -15,7 +15,7 @@ public:
 
 template<typename type>
 int P_TTT_AI_Player<type>::miniMax(const type& symbol, bool isMaximizing) {
-    if (this->boardPtr->is_win()) return isMaximizing ? 1 : -1;
+    if (this->boardPtr->is_win()) return (isMaximizing ? 1 : -1);
     if (this->boardPtr->is_draw()) return 0;
 
     int bestScore = isMaximizing ? INT_MIN : INT_MAX;

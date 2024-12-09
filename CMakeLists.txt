@@ -19,16 +19,23 @@ set(PROJECT_SOURCES
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
+        resources.qrc
         include/BoardGame_Classes.h
         include/Pyramid_TicTacToe.h
         include/P_TTT_AI_Player.h
 
 )
 
+# if(WIN32)
+#     set(APP_ICON_RESOURCE "${CMAKE_SOURCE_DIR}/app_icon.rc")
+#     target_sources(Pyramid_Tic-Tac-Toe PRIVATE ${APP_ICON_RESOURCE})
+# endif()
+
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(Pyramid_Tic-Tac-Toe
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        resources.qrc
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET Pyramid_Tic-Tac-Toe APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

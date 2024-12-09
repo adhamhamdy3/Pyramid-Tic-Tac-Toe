@@ -10,6 +10,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::Pyramid_Tic_Tac_Toe)
 {
     ui->setupUi(this);
+    this->setWindowIcon(QIcon(":/Pyramid Tic Tac Toe.ico"));
     initGrid();
 
     player1 = true;
@@ -19,15 +20,13 @@ MainWindow::MainWindow(QWidget *parent)
     gameOver = false;
 
     Board = new Pyramid_TicTacToe_Board<char>();
+    players[0] = players[1] = nullptr;
 
     getPlayerInfo();
 
-    P_TTT_GAME = new GameManager<char>(Board, players);
-
     updateNoOfMovesLabel();
 
-    ui->state1label->setText("State: YOUR TURN!");
-    ui->state2Label->setText("State: Waiting...");
+    updateState();
 
 }
 
@@ -37,12 +36,10 @@ MainWindow::~MainWindow()
     if (players[0]) delete players[0];
     if (players[1]) delete players[1];
     if (Board) delete Board;
-
-    delete P_TTT_GAME;
-
 }
 
 void MainWindow::initGrid(){
+    ui->P_TTT_Grid->clearContents();
     ui->P_TTT_Grid->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->P_TTT_Grid->setSelectionMode(QAbstractItemView::NoSelection);
 
@@ -80,11 +77,11 @@ void MainWindow::on_P_TTT_Grid_cellDoubleClicked(int row, int column)
     }
 
     if (player1) {
-        P_TTT_GAME->boardPtr->update_board(row, column, players[0]->getsymbol());
+        Board->update_board(row, column, players[0]->getsymbol());
         updateCell(item, 0, row, column);
 
     } else if (player2) {
-        P_TTT_GAME->boardPtr->update_board(row, column, players[1]->getsymbol());
+        Board->update_board(row, column, players[1]->getsymbol());
         updateCell(item, 1, row, column);
     }
 
@@ -94,8 +91,7 @@ void MainWindow::on_P_TTT_Grid_cellDoubleClicked(int row, int column)
 
     player1 ^= 1;
 
-    updateState(); // toggle player1 ^= 1
-
+    updateState();
 
     if(!nonHumanPlayerMode) player2 ^= 1;
 
@@ -106,12 +102,17 @@ void MainWindow::on_P_TTT_Grid_cellDoubleClicked(int row, int column)
 }
 
 void MainWindow::updateNoOfMovesLabel() const{
-    ui->noOfMovesLabel->setText("NUMBER OF MOVES = " + QString::fromStdString(std::to_string(P_TTT_GAME->boardPtr->n_moves)));
+    ui->noOfMovesLabel->setText("NUMBER OF MOVES = " + QString::fromStdString(std::to_string(Board->n_moves)));
 
 }
 
 
 void MainWindow::getPlayerInfo(){
+
+    if (players[0]) delete players[0];
+    if (players[1]) delete players[1];
+
+
     QString player1Name = QInputDialog::getText(this, "Player 1 Name", "Enter Player 1 name:", QLineEdit::Normal, "Player 1");
     if(player1Name.isEmpty()) player1Name = "Player1";
 
@@ -162,7 +163,7 @@ void MainWindow::executeNonHumanPlayerTurn(){
     int x, y;
     players[1]->getmove(x, y);
 
-    while(!P_TTT_GAME->boardPtr->update_board(x, y, players[1]->getsymbol())){
+    while(!Board->update_board(x, y, players[1]->getsymbol())){
         players[1]->getmove(x, y);
     }
 
@@ -211,17 +212,50 @@ void MainWindow::updateState(){
 }
 
 
+void MainWindow::playAgain(){
+    Board->resetBoard();
+    initGrid();
+    ui->P_TTT_Grid->setEnabled(true);
+
+    player1 = true, player2 = false, gameOver = false;
+    nonHumanPlayerMode = false;
+
+    getPlayerInfo();
+
+    updateNoOfMovesLabel();
+
+    updateState();
+}
+
 void MainWindow::isGameIsOver(){
-    if (P_TTT_GAME->boardPtr->game_is_over()) {
-        if (P_TTT_GAME->boardPtr->is_win()) {
+    if (Board->game_is_over()) {
+        QString msg;
+        if (Board->is_win()) {
             if (player1)
-                QMessageBox::information(this, "Win!", QString::fromStdString(players[0]->getname()) + " has won.");
+                msg = QString::fromStdString(players[0]->getname() + " has won.");
             else
-                QMessageBox::information(this, "Win!", QString::fromStdString(players[1]->getname()) + " has won.");
-        } else if (P_TTT_GAME->boardPtr->is_draw()) {
-            QMessageBox::information(this, "Draw!", "The match ended with a draw.");
+                msg = QString::fromStdString(players[1]->getname() + " has won.");
+        } else if (Board->is_draw()) {
+            msg = "The match ended with a draw.";
         }
-        gameOver = true;
+
+        QMessageBox msgBox(this);
+        msgBox.setWindowTitle("Game Over!");
+        msgBox.setText(msg);
+        msgBox.setIcon(QMessageBox::Information);
+
+        QPushButton* playAgainButton = msgBox.addButton("Play Again", QMessageBox::AcceptRole);
+        QPushButton* quitButton = msgBox.addButton("Quit", QMessageBox::RejectRole);
+
+        msgBox.exec();
+
+        if(msgBox.clickedButton() == playAgainButton){
+            playAgain();
+        } else if (msgBox.clickedButton() == quitButton) {
+            QApplication::quit();
+        } else {
+            // gameOver = true;
+        }
     }
 }
 
