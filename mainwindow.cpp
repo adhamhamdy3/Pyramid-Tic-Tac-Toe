@@ -13,6 +13,15 @@ MainWindow::MainWindow(QWidget *parent)
     this->setWindowIcon(QIcon(":/Pyramid Tic Tac Toe.ico"));
     initGrid();
 
+    this->setStyleSheet("background-color: #263238; color: #ECEFF1");
+
+
+    ui->P_TTT_Grid->setStyleSheet("background-color: #37474F; "
+                                  "gridline-color: #546E7A; "
+                                  "border: 1px solid #546E7A;");
+
+
+
     player1 = true;
     player2 = false;
 
@@ -53,13 +62,14 @@ void MainWindow::initGrid(){
                 item->setBackground(Qt::transparent);
             } else {
                 item->setFlags(Qt::ItemIsEnabled);
-                item->setBackground(Qt::gray);
+                item->setBackground(QColorConstants::Svg::aliceblue);
                 item->setTextAlignment(Qt::AlignCenter);
             }
-
+            item->setForeground(Qt::white);
             ui->P_TTT_Grid->setItem(row, col, item);
         }
     }
+    ui->P_TTT_Grid->setEnabled(true);
 }
 
 
@@ -96,7 +106,7 @@ void MainWindow::on_P_TTT_Grid_cellDoubleClicked(int row, int column)
     if(!nonHumanPlayerMode) player2 ^= 1;
 
     if(nonHumanPlayerMode)
-        nonHumanPlayerTurn(2000);
+        nonHumanPlayerTurn(1000);
 
     updateNoOfMovesLabel();
 }
@@ -190,7 +200,7 @@ void MainWindow::nonHumanPlayerTurn(const int& delay = 2000) {
 void MainWindow::updateCell(QTableWidgetItem *item, const int& playerIndex, const int& row, const int& column){
     item->setText(QString::fromStdString(std::string(1, players[playerIndex]->getsymbol())));
     item->setTextAlignment(Qt::AlignCenter);
-    item->setFont(QFont("Outrun future", 30, QFont::Bold));
+    item->setFont(QFont("Outrun future", 45, QFont::Bold));
     if(!playerIndex) item->setBackground(Qt::blue);
     else item->setBackground(Qt::red);
     item->setForeground(Qt::white);
@@ -214,13 +224,13 @@ void MainWindow::updateState(){
 
 void MainWindow::playAgain(){
     Board->resetBoard();
-    initGrid();
-    ui->P_TTT_Grid->setEnabled(true);
 
     player1 = true, player2 = false, gameOver = false;
     nonHumanPlayerMode = false;
 
     getPlayerInfo();
+
+    initGrid();    
 
     updateNoOfMovesLabel();
 
@@ -247,14 +257,15 @@ void MainWindow::isGameIsOver(){
         QPushButton* playAgainButton = msgBox.addButton("Play Again", QMessageBox::AcceptRole);
         QPushButton* quitButton = msgBox.addButton("Quit", QMessageBox::RejectRole);
 
+
         msgBox.exec();
 
         if(msgBox.clickedButton() == playAgainButton){
             playAgain();
         } else if (msgBox.clickedButton() == quitButton) {
             QApplication::quit();
-        } else {
-            // gameOver = true;
+        } else if (msgBox.clickedButton() == nullptr){
+             gameOver = true;
         }
     }
 }

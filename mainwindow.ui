@@ -209,7 +209,7 @@ hover: {
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">color: blue;</string>
+             <string notr="true">color: #B0BEC5;</string>
             </property>
             <property name="frameShadow">
              <enum>QFrame::Shadow::Plain</enum>
@@ -277,6 +277,9 @@ hover: {
         </item>
         <item>
          <widget class="Line" name="line_3">
+          <property name="styleSheet">
+           <string notr="true">color: #B0BEC5;</string>
+          </property>
           <property name="orientation">
            <enum>Qt::Orientation::Vertical</enum>
           </property>
@@ -284,6 +287,9 @@ hover: {
         </item>
         <item>
          <widget class="Line" name="line_4">
+          <property name="styleSheet">
+           <string notr="true">color: #B0BEC5;</string>
+          </property>
           <property name="orientation">
            <enum>Qt::Orientation::Vertical</enum>
           </property>
@@ -310,7 +316,7 @@ hover: {
           <item>
            <widget class="Line" name="line_2">
             <property name="styleSheet">
-             <string notr="true">color: red;</string>
+             <string notr="true">color: #B0BEC5;</string>
             </property>
             <property name="frameShadow">
              <enum>QFrame::Shadow::Plain</enum>

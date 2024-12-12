@@ -51,6 +51,30 @@ pair<int, int> P_TTT_AI_Player<type>::bestMove() {
 
     for (int i = 0; i < 3; ++i) {
         for (int j = 0; j < 5; ++j) {
+            if (this->boardPtr->update_board(i, j, this->symbol)) {
+                if (this->boardPtr->is_win()) {
+                    this->boardPtr->update_board(i, j, ' ');
+                    return {i, j};
+                }
+                this->boardPtr->update_board(i, j, ' ');
+            }
+        }
+    }
+
+    for (int i = 0; i < 3; ++i) {
+        for (int j = 0; j < 5; ++j) {
+            if (this->boardPtr->update_board(i, j, opponentSymbol)) {
+                if (this->boardPtr->is_win()) {
+                    this->boardPtr->update_board(i, j, ' ');
+                    return {i, j};
+                }
+                this->boardPtr->update_board(i, j, ' ');
+            }
+        }
+    }
+
+    for (int i = 0; i < 3; ++i) {
+        for (int j = 0; j < 5; ++j) {
             if (this->boardPtr->update_board(i, j, this->symbol)){ // check if the cell is empty
                 int score = miniMax(this->symbol, true);
                 this->boardPtr->update_board(i, j, ' '); // undo Move that minimax caused
